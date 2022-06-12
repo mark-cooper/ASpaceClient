@@ -2,6 +2,9 @@ package org.lyrasis.aspaceclient;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import okhttp3.Response;
 
 public class Client {
@@ -27,12 +30,20 @@ public class Client {
     return new RequestService(config.getUrl(), path, params, headers).execute(session);
   }
 
+  public Session getSession() {
+    return session;
+  }
+
   public String getToken() {
     return session.getToken();
   }
 
   public Response login() throws IOException {
     return new LoginService(config.getUrl(), config.getUsername(), config.getPassword()).login(session);
+  }
+
+  public Iterator<List<Result>> page(String path) throws IOException {
+    return new ResponseIterator(config.getUrl(), path, session);
   }
 
   public Response post(String path, String payload) throws IOException {

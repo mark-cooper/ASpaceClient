@@ -29,6 +29,8 @@ public class LoginService {
     if (response.isSuccessful()) {
       JSONObject jo = new JSONObject(response.body().string());
       session.setToken(jo.get("session").toString());
+    } else {
+      throw new IOException("Login failed: " + response);
     }
 
     return response;
