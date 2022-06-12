@@ -22,7 +22,8 @@ public class RequestService {
   private String path;
   private Session session;
 
-  private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+  private static final MediaType MEDIA_TYPE_JSON =
+      MediaType.parse("application/json; charset=utf-8");
   private static MediaType MEDIA_TYPE_DEFAULT = MEDIA_TYPE_JSON;
 
   public RequestService(HttpUrl url, String path) {
@@ -36,7 +37,8 @@ public class RequestService {
     this.params = params;
   }
 
-  public RequestService(HttpUrl url, String path, HashMap<String, String> params, HashMap<String, String> headers) {
+  public RequestService(HttpUrl url, String path, HashMap<String, String> params,
+      HashMap<String, String> headers) {
     this.url = url;
     this.path = path;
     this.params = params;
@@ -97,8 +99,10 @@ public class RequestService {
     return builder.build();
   }
 
-  private Request buildPayloadRequest(HttpUrl url, String payload, HashMap<String, String> headers) {
-    Request.Builder builder = new Request.Builder().url(url).post(RequestBody.create(payload, MEDIA_TYPE_DEFAULT));
+  private Request buildPayloadRequest(HttpUrl url, String payload,
+      HashMap<String, String> headers) {
+    Request.Builder builder =
+        new Request.Builder().url(url).post(RequestBody.create(payload, MEDIA_TYPE_DEFAULT));
     appendHeaders(builder, headers);
     return builder.build();
   }

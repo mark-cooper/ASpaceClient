@@ -39,7 +39,8 @@ public class Client {
   }
 
   public Response login() throws IOException {
-    return new LoginService(config.getUrl(), config.getUsername(), config.getPassword()).login(session);
+    return new LoginService(config.getUrl(), config.getUsername(), config.getPassword())
+        .login(session);
   }
 
   public Iterator<List<Result>> page(String path) throws IOException {
@@ -50,7 +51,8 @@ public class Client {
     return new RequestService(config.getUrl(), path, payload).execute(session);
   }
 
-  public Response post(String path, String payload, HashMap<String, String> params) throws IOException {
+  public Response post(String path, String payload, HashMap<String, String> params)
+      throws IOException {
     return new RequestService(config.getUrl(), path, payload, params).execute(session);
   }
 
