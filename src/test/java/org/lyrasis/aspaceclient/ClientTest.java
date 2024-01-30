@@ -23,7 +23,7 @@ public class ClientTest {
       Response response = client.get("repositories");
       assertTrue(response.isSuccessful());
     } catch (IOException e) {
-      e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -34,10 +34,10 @@ public class ClientTest {
       Client client = new Client(config);
 
       client.login();
-      Response response = client.get("repositories/2/resources/1");
+      Response response = client.get("repositories/2/resources/2");
       assertTrue(response.isSuccessful());
     } catch (IOException e) {
-      e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -50,7 +50,7 @@ public class ClientTest {
       Response response = client.get("repositories/2/resources/1");
       assertFalse(response.isSuccessful());
     } catch (IOException e) {
-      e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -70,7 +70,7 @@ public class ClientTest {
         }
       }
     } catch (IOException e) {
-      e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -84,7 +84,7 @@ public class ClientTest {
       assertTrue(response.isSuccessful());
       assertNotNull(client.getToken());
     } catch (IOException e) {
-      e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 

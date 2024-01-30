@@ -10,28 +10,27 @@ import java.util.NoSuchElementException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import okhttp3.HttpUrl;
 import okhttp3.Response;
 
 public class ResponseIterator implements Iterator<List<Result>> {
 
   private boolean pending = true;
-  private HttpUrl url;
+  private final Config config;
   private int lastPage;
   private int page;
   private int thisPage;
-  private Session session;
-  private String path;
+  private final Session session;
+  private final String path;
 
-  public ResponseIterator(HttpUrl url, String path, Session session) {
-    this.url = url;
+  public ResponseIterator(Config config, String path, Session session) {
+    this.config = config;
     this.page = 1;
     this.path = path;
     this.session = session;
   }
 
-  public ResponseIterator(HttpUrl url, String path, int page, Session session) {
-    this.url = url;
+  public ResponseIterator(Config config, String path, int page, Session session) {
+    this.config = config;
     this.page = page;
     this.path = path;
     this.session = session;
@@ -50,11 +49,11 @@ public class ResponseIterator implements Iterator<List<Result>> {
     this.pending = false;
     List<Result> results = new ArrayList<>();
 
-    HashMap<String, String> params = new HashMap<String, String>();
+    HashMap<String, String> params = new HashMap<>();
     params.put("page", String.valueOf(page));
     try {
-      Response response = new RequestService(url, path, params).execute(session);
-      if (!response.isSuccessful())
+      Response response = new RequestService(config, path, params).execute(session);
+      if (!response.isSuccessful() || response.body() == null)
         throw new IOException("Unexpected code " + response);
 
       JSONObject jo = new JSONObject(response.body().string());

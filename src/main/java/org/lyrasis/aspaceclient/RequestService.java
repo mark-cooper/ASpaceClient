@@ -2,6 +2,7 @@ package org.lyrasis.aspaceclient;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.HttpUrl;
@@ -12,55 +13,53 @@ import okhttp3.Response;
 import okhttp3.RequestBody;
 
 public class RequestService {
-
-  private HashMap<String, String> headers = new HashMap<String, String>();
-  private HashMap<String, String> params = new HashMap<String, String>();
-  private HttpUrl url;
-  private OkHttpClient client = new OkHttpClient();
-  private Request request;
+  private final OkHttpClient client = new OkHttpClient();
+  private final Config config;
   private String payload;
-  private String path;
+  private final String path;
   private Session session;
+  private HashMap<String, String> headers = new HashMap<>();
+  private HashMap<String, String> params = new HashMap<>();
 
   private static final MediaType MEDIA_TYPE_JSON =
       MediaType.parse("application/json; charset=utf-8");
-  private static MediaType MEDIA_TYPE_DEFAULT = MEDIA_TYPE_JSON;
+  private static final MediaType MEDIA_TYPE_DEFAULT = MEDIA_TYPE_JSON;
 
-  public RequestService(HttpUrl url, String path) {
-    this.url = url;
+  public RequestService(Config config, String path) {
+    this.config = config;
     this.path = path;
   }
 
-  public RequestService(HttpUrl url, String path, HashMap<String, String> params) {
-    this.url = url;
+  public RequestService(Config config, String path, HashMap<String, String> params) {
+    this.config = config;
     this.path = path;
     this.params = params;
   }
 
-  public RequestService(HttpUrl url, String path, HashMap<String, String> params,
+  public RequestService(Config config, String path, HashMap<String, String> params,
       HashMap<String, String> headers) {
-    this.url = url;
+    this.config = config;
     this.path = path;
     this.params = params;
     this.headers = headers;
   }
 
-  public RequestService(HttpUrl url, String path, String payload) {
-    this.url = url;
+  public RequestService(Config config, String path, String payload) {
+    this.config = config;
     this.path = path;
     this.payload = payload;
   }
 
-  public RequestService(HttpUrl url, String path, String payload, HashMap<String, String> params) {
-    this.url = url;
+  public RequestService(Config config, String path, String payload, HashMap<String, String> params) {
+    this.config = config;
     this.path = path;
     this.payload = payload;
     this.params = params;
   }
 
-  public RequestService(HttpUrl url, String path, String payload, HashMap<String, String> params,
+  public RequestService(Config config, String path, String payload, HashMap<String, String> params,
       HashMap<String, String> headers) {
-    this.url = url;
+    this.config = config;
     this.path = path;
     this.payload = payload;
     this.params = params;
@@ -69,6 +68,7 @@ public class RequestService {
 
   public Response execute(Session session) throws IOException {
     this.session = session;
+    Request request;
 
     HttpUrl url = buildUrl(path, params);
     if (payload != null) {
@@ -108,8 +108,12 @@ public class RequestService {
   }
 
   private HttpUrl buildUrl(String path, HashMap<String, String> params) {
-    HttpUrl.Builder builder = new HttpUrl.Builder().scheme(url.scheme()).host(url.host())
-        .addPathSegment(String.join("/", url.pathSegments())).addPathSegment(path);
+    String scheme = config.getUrl().scheme();
+    String host = config.getUrl().host();
+    List<String> segments = config.getUrl().pathSegments();
+
+    HttpUrl.Builder builder = new HttpUrl.Builder().scheme(scheme).host(host)
+        .addPathSegment(String.join("/", segments)).addPathSegment(path);
 
     for (Map.Entry<String, String> me : params.entrySet()) {
       builder.addQueryParameter(me.getKey(), me.getValue());

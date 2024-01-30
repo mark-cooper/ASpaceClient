@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class Result {
 
-  private JSONObject json;
+  private final JSONObject json;
 
   public Result(JSONObject json) {
     this.json = json;

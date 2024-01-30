@@ -5,28 +5,23 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
-import okhttp3.HttpUrl;
 import okhttp3.Response;
 
 public class LoginService {
-  private HttpUrl url;
-  private String username;
-  private String password;
+  private final Config config;
 
-  public LoginService(HttpUrl url, String username, String password) {
-    this.url = url;
-    this.username = username;
-    this.password = password;
+  public LoginService(Config config) {
+    this.config = config;
   }
 
   public Response login(Session session) throws IOException {
-    String path = "users/" + username + "/login";
-    HashMap<String, String> params = new HashMap<String, String>();
-    params.put("password", password);
+    String path = String.format("users/%s/login", config.getUsername());
+    HashMap<String, String> params = new HashMap<>();
+    params.put("password", config.getPassword());
 
-    Response response = new RequestService(url, path, "{}", params).execute(session);
+    Response response = new RequestService(config, path, "{}", params).execute(session);
 
-    if (response.isSuccessful()) {
+    if (response.isSuccessful() && response.body() != null) {
       JSONObject jo = new JSONObject(response.body().string());
       session.setToken(jo.get("session").toString());
     } else {

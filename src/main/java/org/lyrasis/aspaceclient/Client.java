@@ -9,25 +9,12 @@ import okhttp3.Response;
 
 public class Client {
 
-  private Config config;
-  private Session session;
+  private final Config config;
+  private final Session session;
 
   public Client(Config config) {
     this.config = config;
     this.session = new Session();
-  }
-
-  public Response get(String path) throws IOException {
-    return new RequestService(config.getUrl(), path).execute(session);
-  }
-
-  public Response get(String path, HashMap<String, String> params) throws IOException {
-    return new RequestService(config.getUrl(), path, params).execute(session);
-  }
-
-  public Response get(String path, HashMap<String, String> params, HashMap<String, String> headers)
-      throws IOException {
-    return new RequestService(config.getUrl(), path, params, headers).execute(session);
   }
 
   public Session getSession() {
@@ -39,31 +26,42 @@ public class Client {
   }
 
   public Response login() throws IOException {
-    return new LoginService(config.getUrl(), config.getUsername(), config.getPassword())
-        .login(session);
+    return new LoginService(config).login(session);
+  }
+
+  public Response get(String path) throws IOException {
+    return new RequestService(config, path).execute(session);
+  }
+
+  public Response get(String path, HashMap<String, String> params) throws IOException {
+    return new RequestService(config, path, params).execute(session);
+  }
+
+  public Response get(String path, HashMap<String, String> params, HashMap<String, String> headers)
+      throws IOException {
+    return new RequestService(config, path, params, headers).execute(session);
   }
 
   public Iterator<List<Result>> page(String path) throws IOException {
-    return new ResponseIterator(config.getUrl(), path, session);
+    return new ResponseIterator(config, path, session);
   }
 
   public Response post(String path, String payload) throws IOException {
-    return new RequestService(config.getUrl(), path, payload).execute(session);
+    return new RequestService(config, path, payload).execute(session);
   }
 
   public Response post(String path, String payload, HashMap<String, String> params)
       throws IOException {
-    return new RequestService(config.getUrl(), path, payload, params).execute(session);
+    return new RequestService(config, path, payload, params).execute(session);
   }
 
   public Response post(String path, String payload, HashMap<String, String> params,
       HashMap<String, String> headers) throws IOException {
-    return new RequestService(config.getUrl(), path, payload, params, headers).execute(session);
+    return new RequestService(config, path, payload, params, headers).execute(session);
   }
 
   @Override
   public String toString() {
     return "Client [config=" + config.toString() + "]";
   }
-
 }
